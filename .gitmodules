@@ -1,0 +1,3 @@
+[submodule "vendor/hydro"]
+	path = vendor/hydro
+	url = https://github.com/ArudenKun/hydro
