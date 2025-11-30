@@ -1,0 +1,35 @@
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Volo.Abp.Autofac;
+using Volo.Abp.Http.Client;
+using Volo.Abp.Http.Client.IdentityModel;
+using Volo.Abp.Modularity;
+
+namespace Zira;
+
+[DependsOn(
+    typeof(AbpAutofacModule),
+    typeof(ZiraHttpApiClientModule),
+    typeof(AbpHttpClientIdentityModelModule)
+)]
+public sealed class ZiraModule : AbpModule
+{
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        PreConfigure<AbpHttpClientBuilderOptions>(options =>
+        {
+            options.ProxyClientBuildActions.Add(
+                (_, clientBuilder) =>
+                {
+                    clientBuilder.AddTransientHttpErrorPolicy(policyBuilder =>
+                        policyBuilder.WaitAndRetryAsync(
+                            3,
+                            i => TimeSpan.FromSeconds(Math.Pow(2, i))
+                        )
+                    );
+                }
+            );
+        });
+    }
+}

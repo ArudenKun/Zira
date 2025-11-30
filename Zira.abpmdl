@@ -1,0 +1,109 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.BasicTheme": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.Account": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.Identity": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/30/2025 12:48:48 +00:00"
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "Zira.Application": {
+      "path": "src/Zira.Application/Zira.Application.abppkg",
+      "folder": "src"
+    },
+    "Zira.Application.Tests": {
+      "path": "test/Zira.Application.Tests/Zira.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "Zira.Domain.Shared": {
+      "path": "src/Zira.Domain.Shared/Zira.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Zira.Application.Contracts": {
+      "path": "src/Zira.Application.Contracts/Zira.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Zira.HttpApi": {
+      "path": "src/Zira.HttpApi/Zira.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Zira.HttpApi.Client": {
+      "path": "src/Zira.HttpApi.Client/Zira.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Zira.EntityFrameworkCore.Tests": {
+      "path": "test/Zira.EntityFrameworkCore.Tests/Zira.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "Zira.EntityFrameworkCore": {
+      "path": "src/Zira.EntityFrameworkCore/Zira.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Zira.TestBase": {
+      "path": "test/Zira.TestBase/Zira.TestBase.abppkg",
+      "folder": "test"
+    },
+    "Zira.Domain.Tests": {
+      "path": "test/Zira.Domain.Tests/Zira.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "Zira.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/Zira.HttpApi.Client.ConsoleTestApp/Zira.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "Zira.DbMigrator": {
+      "path": "src/Zira.DbMigrator/Zira.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "Zira.HttpApi.Host": {
+      "path": "src/Zira.HttpApi.Host/Zira.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "Zira.Domain": {
+      "path": "src/Zira.Domain/Zira.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}
