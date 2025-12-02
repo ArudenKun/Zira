@@ -1,7 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="..\..\common.props" />
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -33,5 +30,4 @@
     <EmbeddedResource Include="Localization\Zira\*.json" />
     <Content Remove="Localization\Zira\*.json" />
   </ItemGroup>
-
 </Project>

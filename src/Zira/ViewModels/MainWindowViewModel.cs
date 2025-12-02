@@ -1,24 +1,55 @@
-﻿using System.ComponentModel;
-using System.Net.Http;
-using Duende.IdentityModel.Client;
-using Zira.Books;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
+using Volo.Abp.DependencyInjection;
+using Volo.Abp.EventBus;
+using Zira.Models.EventData;
 
 namespace Zira.ViewModels;
 
-public sealed partial class MainWindowViewModel : ViewModelBase
+public sealed partial class MainWindowViewModel
+    : ViewModel,
+        ILocalEventHandler<SplashViewFinishedEventData>,
+        ILocalEventHandler<LoginSuccessEventData>,
+        ISingletonDependency
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public MainWindowViewModel(IHttpClientFactory httpClientFactory)
+    public MainWindowViewModel(ISukiToastManager toastManager, ISukiDialogManager dialogManager)
     {
-        _httpClientFactory = httpClientFactory;
+        ToastManager = toastManager;
+        DialogManager = dialogManager;
     }
 
-    protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
+    public ISukiToastManager ToastManager { get; }
+    public ISukiDialogManager DialogManager { get; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsMainView))]
+    [NotifyCanExecuteChangedFor(nameof(ShowPageCommand))]
+    public partial ViewModel ContentViewModel { get; set; } = null!;
+
+    public bool IsMainView => ContentViewModel is MainViewModel;
+
+    public override void OnLoaded()
     {
-        var client = _httpClientFactory.CreateClient();
-        var document = await client.GetDiscoveryDocumentAsync();
+        ContentViewModel = LazyServiceProvider.LazyGetRequiredService<SplashViewModel>();
     }
 
-    public string Greeting { get; } = "Welcome to Avalonia!";
+    [RelayCommand(CanExecute = nameof(IsMainView))]
+    private async Task ShowPage(Type pageType)
+    {
+        await LocalEventBus.PublishAsync(new ShowPageEventData(pageType));
+    }
+
+    public Task HandleEventAsync(SplashViewFinishedEventData eventData)
+    {
+        ContentViewModel = LazyServiceProvider.LazyGetRequiredService<LoginViewModel>();
+        return Task.CompletedTask;
+    }
+
+    public Task HandleEventAsync(LoginSuccessEventData eventData)
+    {
+        ContentViewModel = LazyServiceProvider.LazyGetRequiredService<MainViewModel>();
+        return Task.CompletedTask;
+    }
 }

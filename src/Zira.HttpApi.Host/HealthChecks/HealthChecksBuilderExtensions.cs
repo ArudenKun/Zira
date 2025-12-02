@@ -1,10 +1,5 @@
-﻿using System;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
+﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Zira.HealthChecks;
 
@@ -14,7 +9,10 @@ public static class HealthChecksBuilderExtensions
     {
         // Add your health checks here
         var healthChecksBuilder = services.AddHealthChecks();
-        healthChecksBuilder.AddCheck<ZiraDatabaseCheck>("Zira DbContext Check", tags: new string[] { "database" });
+        healthChecksBuilder.AddCheck<ZiraDatabaseCheck>(
+            "Zira DbContext Check",
+            tags: new string[] { "database" }
+        );
 
         services.ConfigureHealthCheckEndpoint("/health-status");
 
@@ -28,7 +26,10 @@ public static class HealthChecksBuilderExtensions
 
         var healthChecksUiBuilder = services.AddHealthChecksUI(settings =>
         {
-            settings.AddHealthCheckEndpoint("Zira Health Status", configuration["App:HealthUiCheckUrl"] ?? healthCheckUrl);
+            settings.AddHealthCheckEndpoint(
+                "Zira Health Status",
+                configuration["App:HealthUiCheckUrl"] ?? healthCheckUrl
+            );
         });
 
         // Set your HealthCheck UI Storage here
@@ -41,7 +42,10 @@ public static class HealthChecksBuilderExtensions
         });
     }
 
-    private static IServiceCollection ConfigureHealthCheckEndpoint(this IServiceCollection services, string path)
+    private static IServiceCollection ConfigureHealthCheckEndpoint(
+        this IServiceCollection services,
+        string path
+    )
     {
         services.Configure<AbpEndpointRouterOptions>(options =>
         {
@@ -54,14 +58,18 @@ public static class HealthChecksBuilderExtensions
                         Predicate = _ => true,
                         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
                         AllowCachingResponses = false,
-                    });
+                    }
+                );
             });
         });
 
         return services;
     }
 
-    private static IServiceCollection MapHealthChecksUiEndpoints(this IServiceCollection services, Action<global::HealthChecks.UI.Configuration.Options>? setupOption = null)
+    private static IServiceCollection MapHealthChecksUiEndpoints(
+        this IServiceCollection services,
+        Action<global::HealthChecks.UI.Configuration.Options>? setupOption = null
+    )
     {
         services.Configure<AbpEndpointRouterOptions>(routerOptions =>
         {

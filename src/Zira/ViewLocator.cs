@@ -1,38 +1,75 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Microsoft.Extensions.DependencyInjection;
+using ServiceScan.SourceGenerator;
+using Volo.Abp.DependencyInjection;
 using Zira.ViewModels;
+using Zira.Views;
 
 namespace Zira;
 
-/// <summary>
-/// Given a view model, returns the corresponding view if possible.
-/// </summary>
-[RequiresUnreferencedCode(
-    "Default implementation of ViewLocator involves reflection which may be trimmed away.",
-    Url = "https://docs.avaloniaui.net/docs/concepts/view-locator"
-)]
-public class ViewLocator : IDataTemplate
+public sealed partial class ViewLocator : IDataTemplate, ISingletonDependency
 {
-    public Control? Build(object? param)
+    private static readonly Dictionary<Type, Type> ViewCache = new();
+
+    private readonly IServiceProvider _serviceProvider;
+
+    public ViewLocator(IServiceProvider serviceProvider)
     {
-        if (param is null)
-            return null;
+        _serviceProvider = serviceProvider;
+        AddViews();
+    }
 
-        var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        var type = Type.GetType(name);
+    public TView CreateView<TView>(ViewModel viewModel)
+        where TView : Control => (TView)CreateView(viewModel);
 
-        if (type != null)
+    public Control CreateView(ViewModel viewModel)
+    {
+        var viewModelType = viewModel.GetType();
+
+        if (!ViewCache.TryGetValue(viewModelType, out var viewType))
         {
-            return (Control)Activator.CreateInstance(type)!;
+            return CreateText($"Could not find view for {viewModelType.FullName}");
         }
 
-        return new TextBlock { Text = "Not Found: " + name };
+        var view = (Control)
+            ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, viewType);
+        view.DataContext = viewModel;
+        return view;
     }
 
-    public bool Match(object? data)
+    Control ITemplate<object?, Control?>.Build(object? data)
     {
-        return data is ViewModelBase;
+        if (data is ViewModel viewModel)
+        {
+            return CreateView(viewModel);
+        }
+
+        return CreateText($"Could not find view for {data?.GetType().FullName}");
     }
+
+    bool IDataTemplate.Match(object? data) => data is ViewModel;
+
+    private static TextBlock CreateText(string text) => new() { Text = text };
+
+    private static void TryAdd(Type viewModelType, Type viewType) =>
+        ViewCache.TryAdd(viewModelType, viewType);
+
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(SukiWindow<>),
+        CustomHandler = nameof(AddViewsHandler)
+    )]
+    [GenerateServiceRegistrations(
+        AssignableTo = typeof(UserControl<>),
+        CustomHandler = nameof(AddViewsHandler)
+    )]
+    private static partial void AddViews();
+
+    private static void AddViewsHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
+        TViewModel
+    >()
+        where TView : Control
+        where TViewModel : ViewModel => TryAdd(typeof(TViewModel), typeof(TView));
 }

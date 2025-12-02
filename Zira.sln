@@ -37,6 +37,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zira.HttpApi.Host", "src\Zi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zira", "src\Zira\Zira.csproj", "{B2459EE6-234C-48C5-9B03-AD688E019B52}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{FE0446B2-71FF-44B7-B224-51F5E0B34B8D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zira.Shared", "src\Zira.Shared\Zira.Shared.csproj", "{10FF1848-BF71-4F9F-A696-9BD6497A1D34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +112,10 @@ Global
 		{B2459EE6-234C-48C5-9B03-AD688E019B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2459EE6-234C-48C5-9B03-AD688E019B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2459EE6-234C-48C5-9B03-AD688E019B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10FF1848-BF71-4F9F-A696-9BD6497A1D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10FF1848-BF71-4F9F-A696-9BD6497A1D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10FF1848-BF71-4F9F-A696-9BD6497A1D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10FF1848-BF71-4F9F-A696-9BD6497A1D34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +136,7 @@ Global
 		{70680696-BB1E-4383-BCB2-42C3767171FB} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{96E5259E-59A3-4FAF-BCD1-5BF8E74EF82C} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{B2459EE6-234C-48C5-9B03-AD688E019B52} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{10FF1848-BF71-4F9F-A696-9BD6497A1D34} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}

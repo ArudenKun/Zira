@@ -1,8 +1,8 @@
-using Avalonia.Controls;
+using Zira.ViewModels;
 
 namespace Zira.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : SukiWindow<MainWindowViewModel>
 {
     public MainWindow()
     {

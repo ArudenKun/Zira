@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Identity;
 
@@ -16,11 +13,18 @@ public class ZiraDatabaseCheck : IHealthCheck, ITransientDependency
         IdentityRoleRepository = identityRoleRepository;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
-            await IdentityRoleRepository.GetListAsync(sorting: nameof(IdentityRole.Id), maxResultCount: 1, cancellationToken: cancellationToken);
+            await IdentityRoleRepository.GetListAsync(
+                sorting: nameof(IdentityRole.Id),
+                maxResultCount: 1,
+                cancellationToken: cancellationToken
+            );
 
             return HealthCheckResult.Healthy($"Could connect to database and get record.");
         }

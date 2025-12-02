@@ -1,20 +1,43 @@
-<Window
+<suki:SukiWindow
     x:Class="Zira.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:Zira.ViewModels"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:vm="using:Zira.ViewModels"
+    xmlns:zira="https://github.com/arudenkun/Zira"
     Title="Zira"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
-
-    <TextBlock
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Text="{Binding Greeting}" />
-
-</Window>
+    <suki:SukiWindow.Hosts>
+        <suki:SukiDialogHost Manager="{Binding DialogManager}" />
+        <suki:SukiToastHost Manager="{Binding ToastManager}" />
+    </suki:SukiWindow.Hosts>
+    <suki:SukiWindow.LogoContent>
+        <Image
+            Width="20"
+            Height="20"
+            VerticalAlignment="Center"
+            Source="/Assets/avalonia-logo.ico" />
+    </suki:SukiWindow.LogoContent>
+    <suki:SukiWindow.RightWindowTitleBarControls>
+        <!--  ReSharper disable Xaml.StyleClassNotFound  -->
+        <!--  <Button  -->
+        <!--  Classes="WindowControlsButton"  -->
+        <!--  Command="{Binding ShowPageCommand}"  -->
+        <!--  CommandParameter="{x:Type ava:AboutPageViewModel}"  -->
+        <!--  Content="{lucide:LucideIconContent Info}" />  -->
+        <Button
+            Classes="WindowControlsButton"
+            Command="{Binding ShowPageCommand}"
+            CommandParameter="{x:Type zira:SettingPageViewModel}"
+            Content="{LucideIconContent Settings}"
+            IsVisible="{Binding IsMainView}" />
+        <!--  ReSharper restore Xaml.StyleClassNotFound  -->
+    </suki:SukiWindow.RightWindowTitleBarControls>
+    <suki:SukiTransitioningContentControl Content="{Binding ContentViewModel}" />
+</suki:SukiWindow>

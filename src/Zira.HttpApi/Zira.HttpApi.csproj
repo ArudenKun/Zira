@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="..\..\common.props" />
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -23,5 +20,4 @@
     <PackageReference Include="Volo.Abp.Account.HttpApi" Version="10.0.0" />
     <PackageReference Include="Volo.Abp.TenantManagement.HttpApi" Version="10.0.0" />
   </ItemGroup>
-
 </Project>
