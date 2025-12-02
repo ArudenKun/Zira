@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,7 +10,7 @@ using Zira.Models.EventData;
 
 namespace Zira.ViewModels;
 
-public sealed partial class LoginViewModel : ViewModel, ISingletonDependency
+public sealed partial class LoginViewModel : ViewModel, ITransientDependency
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsLoginEnabled))]
@@ -34,28 +35,31 @@ public sealed partial class LoginViewModel : ViewModel, ISingletonDependency
 
     [RelayCommand(CanExecute = nameof(IsLoginEnabled))]
     private async Task LoginAsync() =>
-        await SetBusyAsync(async () =>
-        {
-            try
+        await SetBusyAsync(
+            async () =>
             {
-                var result = await AuthenticationManager.AuthenticateAsync(UserName, Password);
-                if (result.IsSuccess)
+                try
                 {
-                    await LocalEventBus.PublishAsync(new LoginSuccessEventData());
+                    var result = await AuthenticationManager.AuthenticateAsync(UserName, Password);
+                    if (result.IsSuccess)
+                    {
+                        await LocalEventBus.PublishAsync(new LoginEventData());
+                    }
+                    else
+                    {
+                        ToastService.ShowToast(
+                            NotificationType.Error,
+                            "Login Failed",
+                            result.ErrorDescription ?? "Please check your username or password"
+                        );
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    ToastService.ShowToast(
-                        NotificationType.Error,
-                        "Login Failed",
-                        result.Error ?? "Please check your username or password"
-                    );
+                    ToastService.ShowExceptionToast(ex, "Login Failed", ex.ToStringDemystified());
+                    Logger.LogException(ex, LogLevel.Warning);
                 }
-            }
-            catch (Exception ex)
-            {
-                ToastService.ShowExceptionToast(ex, "Login Failed");
-                Logger.LogException(ex, LogLevel.Warning);
-            }
-        });
+            },
+            "Authenticating..."
+        );
 }

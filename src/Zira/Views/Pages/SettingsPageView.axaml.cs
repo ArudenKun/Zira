@@ -2,9 +2,9 @@
 
 namespace Zira.Views.Pages;
 
-public partial class SettingPageView : UserControl<SettingPageViewModel>
+public partial class SettingsPageView : UserControl<SettingsPageViewModel>
 {
-    public SettingPageView()
+    public SettingsPageView()
     {
         InitializeComponent();
     }

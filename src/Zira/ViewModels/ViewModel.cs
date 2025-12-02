@@ -1,4 +1,5 @@
-﻿using AutoInterfaceAttributes;
+﻿using System.Diagnostics;
+using AutoInterfaceAttributes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;
@@ -36,6 +37,9 @@ public abstract partial class ViewModel : ObservableValidator, IViewModel
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     public partial bool IsBusy { get; set; }
 
+    [ObservableProperty]
+    public partial string IsBusyText { get; set; } = string.Empty;
+
     public bool IsNotBusy => !IsBusy;
 
     public virtual void OnLoaded() { }
@@ -44,13 +48,10 @@ public abstract partial class ViewModel : ObservableValidator, IViewModel
 
     protected void OnAllPropertiesChanged() => OnPropertyChanged(string.Empty);
 
-    public async Task SetBusyAsync(
-        Func<Task> func,
-        string? loadingMessage = null,
-        bool showException = true
-    )
+    public async Task SetBusyAsync(Func<Task> func, string busyText = "", bool showException = true)
     {
         IsBusy = true;
+        IsBusyText = busyText;
         try
         {
             await func();
@@ -59,6 +60,7 @@ public abstract partial class ViewModel : ObservableValidator, IViewModel
         finally
         {
             IsBusy = false;
+            IsBusyText = string.Empty;
         }
     }
 
@@ -72,10 +74,7 @@ public abstract partial class ViewModel : ObservableValidator, IViewModel
         Logger.LogException(ex);
         if (shouldDisplay)
         {
-            //Dispatcher.CurrentDispatcher.Invoke(() =>
-            //{
-            //    _ = Task.Run(() => _dialogCoordinator.ShowMessageAsync(this, _localizer?["Error"] ?? "Error", (_localizer?["Failed"] ?? "Failed") + $": {ex.ToStringDemystified()}"));
-            //});
+            ToastService.ShowExceptionToast(ex, "Error", ex.ToStringDemystified());
         }
 
         return shouldCatch;

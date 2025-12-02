@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Lucide.Avalonia;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Threading;
+using Zira.Models.EventData;
 
 namespace Zira.ViewModels.Pages;
 
@@ -21,5 +22,12 @@ public sealed partial class HomePageViewModel : PageViewModel, ISingletonDepende
             await AuthenticationManager.GetUserProfileAsync()
         );
         AccessToken = profile.UserName;
+    }
+
+    [RelayCommand]
+    private async Task LogoutAsync()
+    {
+        await AuthenticationManager.LogoutAsync();
+        await LocalEventBus.PublishAsync(new LogoutEventData());
     }
 }

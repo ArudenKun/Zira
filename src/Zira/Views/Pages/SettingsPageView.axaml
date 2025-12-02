@@ -1,11 +1,13 @@
 ﻿<UserControl
-    x:Class="Zira.Views.Pages.SettingPageView"
+    x:Class="Zira.Views.Pages.SettingsPageView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:zira="https://github.com/arudenkun/Zira"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    x:DataType="zira:SettingsPageViewModel"
     mc:Ignorable="d">
-    Welcome to Setting Page!
+    Welcome to Avalonia!
 </UserControl>

@@ -1,7 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using Zira.ViewModels;
+﻿using Zira.ViewModels;
 
 namespace Zira.Views;
 

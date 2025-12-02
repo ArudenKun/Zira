@@ -19,7 +19,7 @@ public sealed partial class MainViewModel
             pageViewModels.AsValueEnumerable().OrderBy(x => x.Index).Cast<PageViewModel>().ToArray()
         );
 
-        Page = Pages.AsValueEnumerable().First(x => x is SettingPageViewModel);
+        Page = Pages.AsValueEnumerable().First(x => x is SettingsPageViewModel);
     }
 
     public IAvaloniaReadOnlyList<PageViewModel> Pages { get; }

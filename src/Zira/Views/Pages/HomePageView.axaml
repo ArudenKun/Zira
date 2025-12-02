@@ -13,5 +13,8 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
         <TextBlock Text="{Binding AccessToken}" />
+        <Button
+            Command="{Binding LogoutCommand}"
+            Content="Logout" />
     </StackPanel>
 </UserControl>

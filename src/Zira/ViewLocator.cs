@@ -11,7 +11,7 @@ namespace Zira;
 
 public sealed partial class ViewLocator : IDataTemplate, ISingletonDependency
 {
-    private static readonly Dictionary<Type, Type> ViewCache = new();
+    private static readonly Dictionary<Type, Type> ViewTypeCache = new();
 
     private readonly IServiceProvider _serviceProvider;
 
@@ -28,13 +28,12 @@ public sealed partial class ViewLocator : IDataTemplate, ISingletonDependency
     {
         var viewModelType = viewModel.GetType();
 
-        if (!ViewCache.TryGetValue(viewModelType, out var viewType))
+        if (!ViewTypeCache.TryGetValue(viewModelType, out var viewType))
         {
             return CreateText($"Could not find view for {viewModelType.FullName}");
         }
 
-        var view = (Control)
-            ActivatorUtilities.GetServiceOrCreateInstance(_serviceProvider, viewType);
+        var view = (Control)ActivatorUtilities.CreateInstance(_serviceProvider, viewType);
         view.DataContext = viewModel;
         return view;
     }
@@ -54,7 +53,7 @@ public sealed partial class ViewLocator : IDataTemplate, ISingletonDependency
     private static TextBlock CreateText(string text) => new() { Text = text };
 
     private static void TryAdd(Type viewModelType, Type viewType) =>
-        ViewCache.TryAdd(viewModelType, viewType);
+        ViewTypeCache.TryAdd(viewModelType, viewType);
 
     [GenerateServiceRegistrations(
         AssignableTo = typeof(SukiWindow<>),

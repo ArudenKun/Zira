@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using Volo.Abp.DependencyInjection;
@@ -11,13 +12,21 @@ namespace Zira.ViewModels;
 public sealed partial class MainWindowViewModel
     : ViewModel,
         ILocalEventHandler<SplashViewFinishedEventData>,
-        ILocalEventHandler<LoginSuccessEventData>,
+        ILocalEventHandler<LoginEventData>,
+        ILocalEventHandler<LogoutEventData>,
         ISingletonDependency
 {
-    public MainWindowViewModel(ISukiToastManager toastManager, ISukiDialogManager dialogManager)
+    private readonly IServiceProvider _serviceProvider;
+
+    public MainWindowViewModel(
+        ISukiToastManager toastManager,
+        ISukiDialogManager dialogManager,
+        IServiceProvider serviceProvider
+    )
     {
         ToastManager = toastManager;
         DialogManager = dialogManager;
+        _serviceProvider = serviceProvider;
     }
 
     public ISukiToastManager ToastManager { get; }
@@ -32,7 +41,7 @@ public sealed partial class MainWindowViewModel
 
     public override void OnLoaded()
     {
-        ContentViewModel = LazyServiceProvider.LazyGetRequiredService<SplashViewModel>();
+        ContentViewModel = _serviceProvider.GetRequiredService<SplashViewModel>();
     }
 
     [RelayCommand(CanExecute = nameof(IsMainView))]
@@ -43,13 +52,19 @@ public sealed partial class MainWindowViewModel
 
     public Task HandleEventAsync(SplashViewFinishedEventData eventData)
     {
-        ContentViewModel = LazyServiceProvider.LazyGetRequiredService<LoginViewModel>();
+        ContentViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
         return Task.CompletedTask;
     }
 
-    public Task HandleEventAsync(LoginSuccessEventData eventData)
+    public Task HandleEventAsync(LoginEventData eventData)
     {
-        ContentViewModel = LazyServiceProvider.LazyGetRequiredService<MainViewModel>();
+        ContentViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+        return Task.CompletedTask;
+    }
+
+    public Task HandleEventAsync(LogoutEventData eventData)
+    {
+        ContentViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
         return Task.CompletedTask;
     }
 }

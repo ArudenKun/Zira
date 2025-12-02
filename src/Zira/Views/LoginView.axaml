@@ -11,7 +11,7 @@
     x:DataType="zira:LoginViewModel"
     mc:Ignorable="d">
     <suki:BusyArea
-        BusyText="Authenticating..."
+        BusyText="{Binding IsBusyText}"
         IsBusy="{Binding IsBusy}">
         <Grid>
             <Image

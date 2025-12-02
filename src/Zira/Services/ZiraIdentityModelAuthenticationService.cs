@@ -40,8 +40,6 @@ public sealed class ZiraIdentityModelAuthenticationService : IdentityModelAuthen
         _authenticationManager = authenticationManager;
     }
 
-    protected override async Task<string?> GetAccessTokenOrNullAsync(string? identityClientName)
-    {
-        return await _authenticationManager.GetAccessTokenAsync();
-    }
+    protected override async Task<string?> GetAccessTokenOrNullAsync(string? identityClientName) =>
+        await _authenticationManager.GetAccessTokenAsync();
 }

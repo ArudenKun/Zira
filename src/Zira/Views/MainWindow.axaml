@@ -34,7 +34,7 @@
         <Button
             Classes="WindowControlsButton"
             Command="{Binding ShowPageCommand}"
-            CommandParameter="{x:Type zira:SettingPageViewModel}"
+            CommandParameter="{x:Type zira:SettingsPageViewModel}"
             Content="{LucideIconContent Settings}"
             IsVisible="{Binding IsMainView}" />
         <!--  ReSharper restore Xaml.StyleClassNotFound  -->
