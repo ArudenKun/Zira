@@ -3,10 +3,12 @@ using Duende.IdentityModel.Client;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Nito.Disposables;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
 using Volo.Abp.IdentityModel;
+using Volo.Abp.Threading;
 
 namespace Zira.Services;
 
@@ -24,7 +26,8 @@ public record AuthenticationResult(
 public sealed class AuthenticationManager
     : IAuthenticationManager,
         ISingletonDependency,
-        IDisposable
+        IDisposable,
+        IAsyncDisposable
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IIdentityUserAppService _identityUserAppService;
@@ -396,6 +399,13 @@ public sealed class AuthenticationManager
 
     public void Dispose()
     {
+        AsyncHelper.RunSync(LogoutAsync);
         _lock.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await LogoutAsync();
+        await _lock.ToAsyncDisposable().DisposeAsync();
     }
 }
