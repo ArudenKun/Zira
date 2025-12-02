@@ -1,0 +1,31 @@
+﻿<UserControl
+    x:Class="Zira.Views.Pages.HomePageView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:zira="https://github.com/arudenkun/Zira"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="zira:HomePageViewModel"
+    mc:Ignorable="d">
+    <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+        <TextBlock Text="{Binding AccessToken}" />
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="UserName" />
+            <TextBox Text="{Binding UserName}" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="Password" />
+            <TextBox Text="{Binding Password}" />
+        </StackPanel>
+        <Button
+            Command="{Binding LoginCommand}"
+            Content="Login" />
+        <Button
+            Command="{Binding CreateBookCommand}"
+            Content="Create Book" />
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <!--    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>-->
+    <!--    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>-->
+  </PropertyGroup>
+  <ItemGroup>
+    <GlobalPackageReference Include="CSharpier.MsBuild" Version="1.2.1" />
+  </ItemGroup>
+</Project>
