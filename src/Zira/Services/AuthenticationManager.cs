@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nito.Disposables;
-using Volo.Abp.Caching;
+using Volo.Abp.Account;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
@@ -22,36 +22,35 @@ public sealed class AuthenticationManager
         IDisposable,
         IAsyncDisposable
 {
+    private readonly ILogger<AuthenticationManager> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IIdentityUserAppService _identityUserAppService;
-    private readonly ILogger<AuthenticationManager> _logger;
     private readonly AbpRemoteServiceOptions _remoteServiceOptions;
     private readonly AbpIdentityClientOptions _identityClientOptions;
-    private readonly IDistributedCache<IdentityUserDto> _identityUserDtoCache;
+    private readonly IProfileAppService _profileAppService;
 
     private const int ExpirationBufferSeconds = 60;
 
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     // State
-    private string? _userName;
     private string? _accessToken;
     private string? _refreshToken;
     private DateTimeOffset _accessTokenExpiration;
 
     public AuthenticationManager(
+        ILogger<AuthenticationManager> logger,
         IHttpClientFactory httpClientFactory,
         IIdentityUserAppService identityUserAppService,
         IOptions<AbpRemoteServiceOptions> remoteServiceOptions,
         IOptions<AbpIdentityClientOptions> identityClientOptions,
-        ILogger<AuthenticationManager> logger,
-        IDistributedCache<IdentityUserDto> identityUserDtoCache
+        IProfileAppService profileAppService
     )
     {
+        _logger = logger;
         _httpClientFactory = httpClientFactory;
         _identityUserAppService = identityUserAppService;
-        _logger = logger;
-        _identityUserDtoCache = identityUserDtoCache;
+        _profileAppService = profileAppService;
         _remoteServiceOptions = remoteServiceOptions.Value;
         _identityClientOptions = identityClientOptions.Value;
     }
@@ -66,7 +65,6 @@ public sealed class AuthenticationManager
         {
             // Reset state
             ClearState();
-            _userName = userName;
 
             var discoveryResponse = await GetDiscoveryResponseAsync();
             if (discoveryResponse.IsError)
@@ -194,29 +192,17 @@ public sealed class AuthenticationManager
         }
     }
 
-    public async ValueTask<IdentityUserDto?> GetUserAsync()
+    public async ValueTask<ProfileDto> GetUserProfileAsync()
     {
-        if (string.IsNullOrEmpty(_userName))
-        {
-            return null;
-        }
-
         try
         {
-            // Ensure we have a valid token before calling the API
-            await GetAccessTokenAsync();
-
-            // Note: Ensure the IIdentityUserAppService is configured to use the token managed here,
-            // otherwise this call might fail with 401.
-            return await _identityUserDtoCache.GetOrAddAsync(
-                $"{nameof(AuthenticationManager)}:{_userName}",
-                async () => await _identityUserAppService.FindByUsernameAsync(_userName)
-            );
+            _ = await GetAccessTokenAsync();
+            return await _profileAppService.GetAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to fetch user details for {UserName}", _userName);
-            return null;
+            _logger.LogError(ex, "Failed to fetch user profile");
+            throw;
         }
     }
 
@@ -310,7 +296,6 @@ public sealed class AuthenticationManager
 
     private void ClearState()
     {
-        _userName = null;
         _accessToken = null;
         _refreshToken = null;
         _accessTokenExpiration = DateTimeOffset.MinValue;

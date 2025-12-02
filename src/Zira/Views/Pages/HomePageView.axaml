@@ -13,19 +13,5 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
         <TextBlock Text="{Binding AccessToken}" />
-        <StackPanel Orientation="Vertical">
-            <TextBlock Text="UserName" />
-            <TextBox Text="{Binding UserName}" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical">
-            <TextBlock Text="Password" />
-            <TextBox Text="{Binding Password}" />
-        </StackPanel>
-        <Button
-            Command="{Binding LoginCommand}"
-            Content="Login" />
-        <Button
-            Command="{Binding CreateBookCommand}"
-            Content="Create Book" />
     </StackPanel>
 </UserControl>
