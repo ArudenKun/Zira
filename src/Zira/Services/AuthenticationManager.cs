@@ -4,22 +4,15 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nito.Disposables;
+using Volo.Abp.Caching;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
 using Volo.Abp.IdentityModel;
 using Volo.Abp.Threading;
+using Zira.Models;
 
 namespace Zira.Services;
-
-/// <summary>
-/// Represents the result of an authentication attempt.
-/// </summary>
-public record AuthenticationResult(
-    bool IsSuccess,
-    string? Error = null,
-    string? ErrorDescription = null
-);
 
 [AutoInterface]
 [PublicAPI]
@@ -34,6 +27,7 @@ public sealed class AuthenticationManager
     private readonly ILogger<AuthenticationManager> _logger;
     private readonly AbpRemoteServiceOptions _remoteServiceOptions;
     private readonly AbpIdentityClientOptions _identityClientOptions;
+    private readonly IDistributedCache<IdentityUserDto> _identityUserDtoCache;
 
     private const int ExpirationBufferSeconds = 60;
 
@@ -45,20 +39,19 @@ public sealed class AuthenticationManager
     private string? _refreshToken;
     private DateTimeOffset _accessTokenExpiration;
 
-    // Cache
-    private IdentityUserDto? _identityUserDto;
-
     public AuthenticationManager(
         IHttpClientFactory httpClientFactory,
         IIdentityUserAppService identityUserAppService,
         IOptions<AbpRemoteServiceOptions> remoteServiceOptions,
         IOptions<AbpIdentityClientOptions> identityClientOptions,
-        ILogger<AuthenticationManager> logger
+        ILogger<AuthenticationManager> logger,
+        IDistributedCache<IdentityUserDto> identityUserDtoCache
     )
     {
         _httpClientFactory = httpClientFactory;
         _identityUserAppService = identityUserAppService;
         _logger = logger;
+        _identityUserDtoCache = identityUserDtoCache;
         _remoteServiceOptions = remoteServiceOptions.Value;
         _identityClientOptions = identityClientOptions.Value;
     }
@@ -203,12 +196,6 @@ public sealed class AuthenticationManager
 
     public async ValueTask<IdentityUserDto?> GetUserAsync()
     {
-        // Check local cache first
-        if (_identityUserDto is not null)
-        {
-            return _identityUserDto;
-        }
-
         if (string.IsNullOrEmpty(_userName))
         {
             return null;
@@ -221,8 +208,10 @@ public sealed class AuthenticationManager
 
             // Note: Ensure the IIdentityUserAppService is configured to use the token managed here,
             // otherwise this call might fail with 401.
-            _identityUserDto = await _identityUserAppService.FindByUsernameAsync(_userName);
-            return _identityUserDto;
+            return await _identityUserDtoCache.GetOrAddAsync(
+                $"{nameof(AuthenticationManager)}:{_userName}",
+                async () => await _identityUserAppService.FindByUsernameAsync(_userName)
+            );
         }
         catch (Exception ex)
         {
@@ -324,7 +313,6 @@ public sealed class AuthenticationManager
         _userName = null;
         _accessToken = null;
         _refreshToken = null;
-        _identityUserDto = null;
         _accessTokenExpiration = DateTimeOffset.MinValue;
     }
 
