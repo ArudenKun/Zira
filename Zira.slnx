@@ -1,0 +1,24 @@
+<Solution>
+    <Folder Name="/client/">
+        <Project Path="client/Zira.Core/Zira.Core.csproj" />
+        <Project Path="client/Zira/Zira.csproj" />
+    </Folder>
+    <Folder Name="/server/">
+        <Project Path="server/Zira.Application.Contracts/Zira.Application.Contracts.csproj" />
+        <Project Path="server/Zira.Application/Zira.Application.csproj" />
+        <Project Path="server/Zira.DbMigrator/Zira.DbMigrator.csproj" />
+        <Project Path="server/Zira.Domain.Shared/Zira.Domain.Shared.csproj" />
+        <Project Path="server/Zira.Domain/Zira.Domain.csproj" />
+        <Project Path="server/Zira.EntityFrameworkCore/Zira.EntityFrameworkCore.csproj" />
+        <Project Path="server/Zira.HttpApi.Client/Zira.HttpApi.Client.csproj" />
+        <Project Path="server/Zira.HttpApi.Host/Zira.HttpApi.Host.csproj" />
+        <Project Path="server/Zira.HttpApi/Zira.HttpApi.csproj" />
+    </Folder>
+    <Folder Name="/test/">
+        <Project Path="test/Zira.Application.Tests/Zira.Application.Tests.csproj" />
+        <Project Path="test/Zira.EntityFrameworkCore.Tests/Zira.EntityFrameworkCore.Tests.csproj" />
+        <Project Path="test/Zira.TestBase/Zira.TestBase.csproj" />
+        <Project Path="test/Zira.Domain.Tests/Zira.Domain.Tests.csproj" />
+        <Project Path="test/Zira.HttpApi.Client.ConsoleTestApp/Zira.HttpApi.Client.ConsoleTestApp.csproj" />
+    </Folder>
+</Solution>
